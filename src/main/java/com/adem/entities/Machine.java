@@ -1,21 +1,18 @@
-package com.nadhem.users.entities;
+package com.adem.entities;
 
 
 
 import java.util.Date;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-@Entity
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Data @NoArgsConstructor @AllArgsConstructor
+@Entity
 public class Machine {
 	public Machine(String nom, double prix, Date dateachat) {
 		super();
@@ -28,7 +25,8 @@ public class Machine {
 private Long IdMachine;
 private String nom;
 private double prix;
-private Date dateachat;
+	@DateTimeFormat(pattern = "yyyy-MM-dd") // Specify expected date format
+	private Date dateachat;
 @ManyToOne
 private Utilisation utulisation;
 

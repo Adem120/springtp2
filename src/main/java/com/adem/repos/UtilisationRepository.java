@@ -1,10 +1,7 @@
-package com.nadhem.users.repos;
+package com.adem.repos;
 
+import com.adem.entities.Utilisation;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.nadhem.users.entities.Utilisation;
-
-
 
 
 public interface UtilisationRepository extends JpaRepository<Utilisation,Long> {
