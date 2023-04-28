@@ -1,4 +1,4 @@
-package com.adem.restControllers;
+package com.adem.Controllers;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,15 +7,15 @@ import java.util.List;
 
 
 import com.adem.entities.Utilisation;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.adem.entities.Machine;
 import com.adem.service.MachineService;
-
-
 
 
 @Controller
@@ -30,35 +30,45 @@ public class MachineController {
 	@RequestMapping("ajoutermachine")
 	public String showCreate(ModelMap modelMap) {
 		List <Utilisation> u= machineService.getAllUtilusation();
+			Machine machine = new Machine();
 		modelMap.addAttribute("utilusation",u);
-		return "Ajoutermachine";
+		modelMap.addAttribute("type","ajouter");
+		modelMap.addAttribute("machine",machine);
+		return "formulairemachine";
 	}
 
 	@RequestMapping("/save")
 	public String savemachine(
-			@ModelAttribute("machine") Machine machine,
-			@RequestParam("dateachat") String date,
+	       @Valid Machine machine,
+		   BindingResult r,
 			@RequestParam("ul") String id,
 			@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "size", defaultValue = "2") int size,
 			ModelMap modelMap
-	) throws ParseException {
+
+	) {
 		// Convert the date
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-         		Date creationDate = dateFormat.parse(date);
-		machine.setDateachat(creationDate);
-		Long idd= Long.parseLong(id);
+		if(r.hasErrors()) {
+			List <Utilisation> u= machineService.getAllUtilusation();
 
-		Utilisation u= machineService.getUtilisationbyid(idd);
-		machine.setUtulisation(u);
-		Machine ajmach = machineService.saveMachine(machine);
-		Page<Machine> machines = machineService.getAllMachineByPage(page, size);
-		modelMap.addAttribute("machines", machines);
-		modelMap.addAttribute("pages", new int[machines.getTotalPages()]);
-		int n=machines.getTotalPages();
-		modelMap.addAttribute("currentPage", n);
+			modelMap.addAttribute("utilusation",u);
+			modelMap.addAttribute("machine",machine);
+			return "formulairemachine";}
+		else {
 
-		return "redirect:/machines?page="+n+""; // Replace with your target URL
+			Long idd = Long.parseLong(id);
+
+			Utilisation u = machineService.getUtilisationbyid(idd);
+			machine.setUtulisation(u);
+			Machine ajmach = machineService.saveMachine(machine);
+			Page<Machine> machines = machineService.getAllMachineByPage(page, size);
+			modelMap.addAttribute("machines", machines);
+			modelMap.addAttribute("pages", new int[machines.getTotalPages()]);
+			int n = machines.getTotalPages();
+			modelMap.addAttribute("currentPage", n);
+
+			return ("redirect:/machines?page="+n+"&size="+size);
+		}
 
 	}
 
@@ -107,9 +117,11 @@ public class MachineController {
 	) {
 		Machine machine = machineService.getMachine(IdMachine);
 		modelMap.addAttribute("machine", machine);
+		modelMap.addAttribute("type","modifier");
 		List <Utilisation> u= machineService.getAllUtilusation();
 		modelMap.addAttribute("utilusation",u);
-		return "Modifiermachine";
+
+		return "formulairemachine";
 	}
 
 	@RequestMapping("/Modifiermachine")
@@ -135,9 +147,9 @@ public class MachineController {
 		modelMap.addAttribute("machines", machines);
 		modelMap.addAttribute("pages", new int[machines.getTotalPages()]);
 		//convert string to int
-
+int n=machines.getTotalPages()/size;
 		modelMap.addAttribute("size", size);
 		modelMap.addAttribute("currentPage", page);
-		return "ListMachines";
+		return ("redirect:/machines?page="+n+"&size="+size);
 	}
 }

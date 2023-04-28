@@ -1,4 +1,4 @@
-package com.adem.restControllers;
+package com.adem.Controllers;
 
 
 import java.util.List;

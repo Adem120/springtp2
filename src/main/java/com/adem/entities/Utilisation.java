@@ -16,11 +16,9 @@ import lombok.NoArgsConstructor;
 public class Utilisation {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Long Idutili;
+private Long idutili;
 private String nomUtilisation;
-@JsonIgnore
-@OneToMany(mappedBy = "utulisation")
-private List<Machine> machine;
+
 
 
 

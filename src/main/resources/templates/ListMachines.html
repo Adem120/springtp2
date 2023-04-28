@@ -30,7 +30,8 @@
                     <td th:text="${machine.nom}"></td>
                     <td th:text="${machine.prix}"></td>
                     <td th:text="${#dates.format(machine.dateachat, 'dd-MM-yyyy')}"></td>
-                    <td th:text="${machine.utulisation.nomUtilisation}"></td>
+                    <td th:if= "${!#strings.isEmpty(machine.utulisation)}"   th:text="${machine.getUtulisation.nomUtilisation}"></td>
+                    <td   th:if= "${#strings.isEmpty(machine.utulisation)}"     th:text="${'Pas de Catégorie'}"></td>
                     <td>
                         <a th:href="@{showUpdate(IdMachine=${machine.IdMachine}, page=${currentPage}, size=${size})}" class="btn btn-primary">Edit</a>
                         <a th:href="@{deletemachine(IdMachine=${machine.IdMachine}, page=${currentPage}, size=${size})}" class="btn btn-danger" onclick="confirm('Are you sure?')">Delete</a>

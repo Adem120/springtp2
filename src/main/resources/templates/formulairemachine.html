@@ -10,25 +10,37 @@
 <div class="container mt-5">
     <div class="card">
         <div class="card-body">
-            <h1 class="card-title">Ajouter Machine</h1>
+            <h1 th:if="${type=='ajouter'}" class="card-title">Ajouter Machine</h1>
+            <h1 th:if="${type=='modifier'}" class="card-title">Modifer Machine</h1>
             <form action="save" method="post">
                 <div class="form-group">
-                    <label class="control-label">Nom</label>
-                    <input type="text" name="nom" class="form-control" />
+                    <input type="hidden" name="idMachine" class="form-control" th:value="${machine.idMachine}"/>
                 </div>
+                <div class="form-group">
+                    <label class="control-label">Nom</label>
+                    <input type="text" name="nom" class="form-control" th:value="${machine.nom}"/>
+                    <span th:errors="${machine.nom}" class="text-danger" ></span>
+                </div>
+
 
                 <div class="form-group">
                     <label class="control-label">Prix</label>
-                    <input type="text" name="prix" class="form-control" />
+                    <input type="text" name="prix" class="form-control" th:value="${machine.prix}" />
+                    <span th:errors="${machine.prix}" class="text-danger"></span>
+
                 </div>
                 <div class="form-group">
                     <label class="control-label">Date d'achat</label>
-                    <input type="date" name="dateachat" class="form-control" id="dateachat"  />
+                    <input type="date" name="dateachat" class="form-control" id="dateachat" th:value="${#dates.format(machine.dateachat, 'yyyy-MM-dd')}"  />
+                    <span th:errors="${machine.dateachat}" class="text-danger"></span>
+
                 </div>
                 <div class="form-group">
                     <label class="control-label">Catégorie</label>
                     <select class="custom-select" aria-label=".form-select-lg example"  name="ul">
+                        <option th:if="${type=='modifier'}" th:value="${machine.utulisation.idutili}" th:text="${machine.utulisation.nomUtilisation}"></option>
                         <option th:each="u : ${utilusation}"  th:value="${u.idutili}" th:text="${u.nomUtilisation}" ></option>
+
                     </select>
                 </div>
 
