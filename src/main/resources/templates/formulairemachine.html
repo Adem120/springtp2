@@ -6,7 +6,7 @@
     <title>new Machine</title>
 </head>
 <body>
-<div th:replace="nav"></div>
+<div th:replace="~{nav}"></div>
 <div class="container mt-5">
     <div class="card">
         <div class="card-body">
@@ -14,7 +14,10 @@
             <h1 th:if="${type=='modifier'}" class="card-title">Modifer Machine</h1>
             <form action="save" method="post">
                 <div class="form-group">
-                    <input type="hidden" name="idMachine" class="form-control" th:value="${machine.idMachine}"/>
+                    <input th:if="${type=='modifier'}" type="text" name="page" class="form-control" th:value="${page}"/>
+                </div>
+                <div class="form-group">
+                    <input type="hidden" th:if="${type=='modifier'}" name="idMachine" class="form-control" th:value="${machine.idMachine}"/>
                 </div>
                 <div class="form-group">
                     <label class="control-label">Nom</label>
@@ -38,7 +41,9 @@
                 <div class="form-group">
                     <label class="control-label">Catégorie</label>
                     <select class="custom-select" aria-label=".form-select-lg example"  name="ul">
-                        <option th:if="${type=='modifier'}" th:value="${machine.utulisation.idutili}" th:text="${machine.utulisation.nomUtilisation}"></option>
+                        <option th:if="${type=='modifier'&& !#strings.isEmpty(machine.utulisation)}" th:value="${machine.utulisation.idutili}" th:text="${machine.utulisation.nomUtilisation}"></option>
+                        <option th:if="${type=='modifier'&& #strings.isEmpty(machine.utulisation)}"  th:text="${'Pas Utilisation'}"></option>
+
                         <option th:each="u : ${utilusation}"  th:value="${u.idutili}" th:text="${u.nomUtilisation}" ></option>
 
                     </select>

@@ -9,6 +9,8 @@ import java.util.List;
 import com.adem.entities.Utilisation;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -42,11 +44,12 @@ public class MachineController {
 	       @Valid Machine machine,
 		   BindingResult r,
 			@RequestParam("ul") String id,
-			@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "page",defaultValue = "0") int page,
 			@RequestParam(name = "size", defaultValue = "2") int size,
 			ModelMap modelMap
 
 	) {
+
 		// Convert the date
 		if(r.hasErrors()) {
 			List <Utilisation> u= machineService.getAllUtilusation();
@@ -55,22 +58,27 @@ public class MachineController {
 			modelMap.addAttribute("machine",machine);
 			return "formulairemachine";}
 		else {
-
+			if(!id.contains("Pas Utilisation")){
 			Long idd = Long.parseLong(id);
-
 			Utilisation u = machineService.getUtilisationbyid(idd);
-			machine.setUtulisation(u);
+			machine.setUtulisation(u);}
 			Machine ajmach = machineService.saveMachine(machine);
 			Page<Machine> machines = machineService.getAllMachineByPage(page, size);
 			modelMap.addAttribute("machines", machines);
 			modelMap.addAttribute("pages", new int[machines.getTotalPages()]);
 			int n = machines.getTotalPages();
-			modelMap.addAttribute("currentPage", n);
+             if(machine.getIdMachine().equals(null)){
+				 System.out.println("ajouter");
+				 return ("redirect:/machines?page="+n+"&size="+size);
 
-			return ("redirect:/machines?page="+n+"&size="+size);
+			 }else{
+				 System.out.println("modifier");
+
+				 return ("redirect:/machines?page="+page+"&size="+size);
+			}}
 		}
 
-	}
+
 
 
 
@@ -80,9 +88,15 @@ public class MachineController {
 			@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "size", defaultValue = "2") int size
 	) {
+
+			AbstractAuthenticationToken authentication= (AbstractAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+			if (authentication != null && authentication.isAuthenticated()) {
+				String username = authentication.getName();
+				System.out.println("User " + username + " is accessing /machines");}
 		Page<Machine> machines = machineService.getAllMachineByPage(page, size);
 		modelMap.addAttribute("machines", machines);
 		modelMap.addAttribute("pages", new int[machines.getTotalPages()]);
+		modelMap.addAttribute("authentification",authentication);
 		int n=machines.getTotalPages()/2;
 		modelMap.addAttribute("currentPage", page);
 		return "ListMachines";
@@ -113,43 +127,16 @@ public class MachineController {
 	@RequestMapping("/showUpdate")
 	public String showUpdate(
 			@RequestParam("IdMachine") Long IdMachine,
-			ModelMap modelMap
+			ModelMap modelMap,@RequestParam(name = "page") String page
 	) {
 		Machine machine = machineService.getMachine(IdMachine);
 		modelMap.addAttribute("machine", machine);
 		modelMap.addAttribute("type","modifier");
 		List <Utilisation> u= machineService.getAllUtilusation();
 		modelMap.addAttribute("utilusation",u);
-
+        modelMap.addAttribute("page",page);
 		return "formulairemachine";
 	}
 
-	@RequestMapping("/Modifiermachine")
-	public String updateAlbum(
-			@ModelAttribute("machine") Machine machine,
-			@RequestParam("dateachat") String date,
-			@RequestParam("ul") String id,
-			//import page from url
 
-			@RequestParam(name = "page",defaultValue = "0") int page,
-			@RequestParam(name = "size", defaultValue = "2") int size,
-			ModelMap modelMap
-	) throws ParseException {
-		// Convert the date
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Date creationDate = dateFormat.parse(String.valueOf(date));
-		machine.setDateachat(creationDate);
-		Long idd= Long.parseLong(id);
-		Utilisation u= machineService.getUtilisationbyid(idd);
-		machine.setUtulisation(u);
-		machineService.updateMachine(machine);
-		Page<Machine> machines = machineService.getAllMachineByPage(0, 2);
-		modelMap.addAttribute("machines", machines);
-		modelMap.addAttribute("pages", new int[machines.getTotalPages()]);
-		//convert string to int
-int n=machines.getTotalPages()/size;
-		modelMap.addAttribute("size", size);
-		modelMap.addAttribute("currentPage", page);
-		return ("redirect:/machines?page="+n+"&size="+size);
-	}
 }
