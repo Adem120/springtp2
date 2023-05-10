@@ -15,32 +15,31 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    @Autowired
     private CustomUserDetailsService userDetailsService;
 
-    @Autowired
-    public SecurityConfig(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    @Autowired
-    private RedirectAuthenticationSuccessHandler Redirect;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
                         .authorizeRequests()
-                .requestMatchers("/webjars/**", "/login", "/register", "/saveuser").permitAll().requestMatchers("ajoutermachine").hasAuthority("ADMIN").anyRequest().authenticated().and()
+                .requestMatchers("/webjars/**", "/login", "/register", "/saveuser").permitAll().
+                requestMatchers("/ajoutermachine","/ajouterutil").hasAuthority("ADMIN").
+                anyRequest().authenticated().and()
 
                                 .formLogin(form -> form
                                         .loginPage("/login")
                                         .defaultSuccessUrl("/machines", true)
-                                        .loginProcessingUrl("/login")
                                         .failureUrl("/login?error=true")
-                                        .successHandler(Redirect) // add this line
+
 
                                         .permitAll()
                                 ).logout(logout -> logout

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://wwww.thymeleaf.org/thymleaf-extras-springsecurity6" lang="en">
 <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.3.1/css/bootstrap.min.css">
 <head>
   <meta charset="UTF-8">
@@ -26,8 +26,8 @@
           <td th:text="${u.idutili}"></td>
           <td th:text="${u.nomUtilisation}"></td>
 
-          <td>
-            <a th:href="@{deleteutilisation(idutili=${u.idutili})}" class="btn btn-danger" onclick="confirm('Are you sure?')">Delete</a>
+          <td sec:authorize="hasRole('ADMIN')">
+            <a  th:href="@{deleteutilisation(idutili=${u.idutili})}" class="btn btn-danger" onclick="confirm('Are you sure?')">Delete</a>
           </td>
         </tr>
         </tbody>

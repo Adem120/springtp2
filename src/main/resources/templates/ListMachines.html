@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org"xmlns:sec="http://wwww.thymeleaf.org/thymleaf-extras-springsecurity6" lang="en">
 <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.3.1/css/bootstrap.min.css">
 <head>
     <meta charset="UTF-8">
@@ -21,7 +21,7 @@
                     <th>Prix Machine</th>
                     <th>Date d'achat </th>
                     <th>Utilusation</th>
-                    <th colspan="2">Actions</th>
+                    <th colspan="2" th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -32,9 +32,9 @@
                     <td th:text="${#dates.format(machine.dateachat, 'dd-MM-yyyy')}"></td>
                     <td th:if= "${!#strings.isEmpty(machine.utulisation)}"   th:text="${machine.getUtulisation.nomUtilisation}"></td>
                     <td   th:if= "${#strings.isEmpty(machine.utulisation)}"     th:text="${'Pas Utilisation'}"></td>
-                    <td>
-                        <a th:href="@{showUpdate(IdMachine=${machine.IdMachine}, page=${currentPage}, size=${size})}" class="btn btn-primary">Edit</a>
-                        <a th:href="@{deletemachine(IdMachine=${machine.IdMachine}, page=${currentPage}, size=${size})}" class="btn btn-danger" onclick="confirm('Are you sure?')">Delete</a>
+                    <td >
+                        <a th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" th:href="@{showUpdate(IdMachine=${machine.IdMachine}, page=${currentPage}, size=${size})}" class="btn btn-primary">Edit</a>
+                        <a  th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}"th:href="@{deletemachine(IdMachine=${machine.IdMachine}, page=${currentPage}, size=${size})}" class="btn btn-danger" onclick="confirm('Are you sure?')">Delete</a>
 
                     </td>
                 </tr>

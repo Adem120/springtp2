@@ -67,7 +67,7 @@ public class MachineController {
 			modelMap.addAttribute("machines", machines);
 			modelMap.addAttribute("pages", new int[machines.getTotalPages()]);
 			int n = machines.getTotalPages();
-             if(machine.getIdMachine().equals(null)){
+             if(page==0){
 				 System.out.println("ajouter");
 				 return ("redirect:/machines?page="+n+"&size="+size);
 
@@ -114,12 +114,8 @@ public class MachineController {
 		Page<Machine> machine = machineService.getAllMachineByPage(p,size);
 		modelMap.addAttribute("machines", machine);
 		modelMap.addAttribute("pages", new int[machine.getTotalPages()]);
-		int n= machine.getTotalPages()-1;
-		if(n>p){
-		modelMap.addAttribute("currentPage", 1);}
-		else{
-			modelMap.addAttribute("currentPage",1);
-		}
+		int n=machine.getTotalPages();
+        		modelMap.addAttribute("currentPage", p);
 		modelMap.addAttribute("size", size);
 		return "ListMachines"; // Replace with your target URL
 	}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://wwww.thymeleaf.org/thymleaf-extras-springsecurity6"
       lang="en"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <link rel="stylesheet" type="text/css" href="webjars/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -24,8 +24,8 @@
         Gestion des Machines
       </a>
       <div class="dropdown-menu">
-        <a class="dropdown-item"sec:authorize="hasRole('ADMIN')" th:href="@{machines}">Listes des Machines</a>
-        <a class="dropdown-item" sec:authorize="isAuthenticated()"th:href="@{ajoutermachine}">Ajouter Machine</a>
+        <a class="dropdown-item" th:href="@{machines}">Listes des Machines</a>
+        <a class="dropdown-item" th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" sec:authorize="isAuthenticated()"th:href="@{ajoutermachine}">Ajouter Machine</a>
       </div>
     </li>
     <li class="nav-item dropdown" >
@@ -33,8 +33,8 @@
         Gestion des Utilisations
       </a>
       <div class="dropdown-menu"  >
-        <a class="dropdown-item" sec:authorize="isAuthenticated()">Listes des utilisations</a>
-        <a class="dropdown-item" sec:authorize="isAuthenticated()" th:href="@{ajouterutil}">Ajouter utilisation</a>
+        <a class="dropdown-item" sec:authorize="isAuthenticated()" th:href="@{utilisation}">Listes des utilisations</a>
+        <a  th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}" class="dropdown-item" sec:authorize="isAuthenticated()" th:href="@{ajouterutil}">Ajouter utilisation</a>
       </div>
     </li>
   </ul>
