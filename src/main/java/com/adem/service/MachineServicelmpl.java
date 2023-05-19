@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.adem.entities.Machine;
 import com.adem.entities.Utilisation;
+import com.adem.repos.ImageRepository;
 import com.adem.repos.UtilisationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -16,9 +18,11 @@ import com.adem.repos.MachineReposotiry;
 public class MachineServicelmpl implements MachineService{
 	 MachineReposotiry machineRepository;
 	 UtilisationRepository ul;
-	public MachineServicelmpl(MachineReposotiry machineRepository,UtilisationRepository u) {
+	ImageRepository imageRepository;
+	public MachineServicelmpl(MachineReposotiry machineRepository,UtilisationRepository u,ImageRepository i) {
 		this.machineRepository = machineRepository;
 		this.ul=u;
+		this.imageRepository=i;
 	}
 
 	@Override
@@ -27,11 +31,20 @@ public class MachineServicelmpl implements MachineService{
 	}
 	@Override
 	public Machine updateMachine(Machine m) {
-	return machineRepository.save(m);
-	
+			Long oldProdImageId =
+					this.getMachine(m.getIdMachine()).getImage().getIdImage();
+			Long newProdImageId = m.getImage().getIdImage();
+		Machine m1=machineRepository.save(m);
+			if (oldProdImageId != newProdImageId) //si l'image a été modifiée
+				imageRepository.deleteById(oldProdImageId);
+
+			return m1;
+
 	}
 	@Override
 	public void deleteMachineById(Long id) {
+		Machine m =machineRepository.getById(id);
+	imageRepository.deleteById(m.getImage().getIdImage());
 	machineRepository.deleteById(id);
 	}
 	@Override

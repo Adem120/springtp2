@@ -1,22 +1,16 @@
 package com.adem.restcontroller;
 
+import java.io.IOException;
 import java.util.List;
 
 
 import com.adem.entities.Machine;
+import com.adem.service.Imageservice;
 import com.adem.service.MachineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-
-
-
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -26,14 +20,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class MachineRestController {
 	@Autowired
 	MachineService machineService;
+	@Autowired
+	Imageservice imageService;
 	@RequestMapping(method=RequestMethod.GET)
 	List<Machine> getAllMachine()
 	{
 		return machineService.getAllMachine();
 	}
 	 @RequestMapping(method = RequestMethod.POST)
-	    public Machine addNewMachine(@RequestBody Machine machine) {
-	        return machineService.saveMachine(machine) ;
+	    public Machine addNewMachine(@RequestBody Machine machine) throws IOException {
+		return machineService.saveMachine(machine) ;
 	    }
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
 	public Machine getMachineById(@PathVariable("id") Long id) {

@@ -1,42 +1,42 @@
 package com.adem.service;
 
 
-import com.adem.dto.RegistrationDto;
 import com.adem.entities.Role;
 import com.adem.entities.User;
 import com.adem.repos.RoleRepository;
 import com.adem.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-
+@Transactional
 @Service
-public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private PasswordEncoder passwordEncoder;
-
+public class UserServiceImpl implements UserService{
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
+    UserRepository userRep;
+    @Autowired
+    RoleRepository roleRep;
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Override
+    public User saveUser(User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        return userRep.save(user);
     }
     @Override
-    public void saveUser(RegistrationDto registrationDto) {
-        User user = new User();
-        user.setUsername(registrationDto.getUsername());
-        user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
-        Role role = roleRepository.findByName("User");
-        user.setRoles(Arrays.asList(role));
-        userRepository.save(user);
+    public User addRoleToUser(String username, String rolename) {
+        User usr = userRep.findByUsername(username);
+        Role r = roleRep.findByName(rolename);
+        usr.getRoles().add(r);
+        return usr;
     }
-
+    @Override
+    public Role addRole(Role role) {
+        return roleRep.save(role);
+    }
     @Override
     public User findUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRep.findByUsername(username);
     }
-
 }

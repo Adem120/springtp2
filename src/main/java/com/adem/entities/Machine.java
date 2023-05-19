@@ -5,7 +5,6 @@ package com.adem.entities;
 import java.util.Date;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -33,9 +32,11 @@ private String nom;
 @NotNull
 	@DateTimeFormat(pattern = "yyyy-MM-dd") // Specify expected date format
 	private Date dateachat;
-@ManyToOne
-private Utilisation utulisation;
+	@ManyToOne
+	private Image image;
 
+	@ManyToOne()
+private Utilisation utulisation;
 
 
 }
