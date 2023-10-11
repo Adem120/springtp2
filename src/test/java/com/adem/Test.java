@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,6 +17,8 @@ import java.util.List;
 class Test {
 	@Autowired
 	MachineReposotiry machineRepository;
+	@Autowired
+com.adem.repos.UserRepository userRepository;
 
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -67,8 +70,10 @@ class Test {
 				System.out.println(m1);
 		}}
 	@org.junit.jupiter.api.Test
-	void test5(){
-		System.out.println(bCryptPasswordEncoder.encode("1234"));
-
+	void test5() {
+		List<com.adem.entities.User> user = new ArrayList<>();
+		user = userRepository.findAll();
+		for (com.adem.entities.User u : user)
+			System.out.println(u.getUsername());
 	}
 }

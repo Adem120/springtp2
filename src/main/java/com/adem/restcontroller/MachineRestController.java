@@ -5,6 +5,7 @@ import java.util.List;
 
 
 import com.adem.entities.Machine;
+import com.adem.entities.User;
 import com.adem.service.Imageservice;
 import com.adem.service.MachineService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class MachineRestController {
 	MachineService machineService;
 	@Autowired
 	Imageservice imageService;
+	@Autowired
+	com.adem.service.UserService userService;
 	@RequestMapping(method=RequestMethod.GET)
 	List<Machine> getAllMachine()
 	{
@@ -39,6 +42,10 @@ public class MachineRestController {
 	public Machine updateMachine(@RequestBody Machine machine) {
 		return machineService.updateMachine(machine);
 		
+	}
+	@RequestMapping(method = RequestMethod.GET,value="/user")
+	public List<com.adem.entities.User> getAllUser() {
+		return userService.findAllUser();
 	}
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
 public void deleteMachine(@PathVariable("id" )Long id) {

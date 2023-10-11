@@ -58,7 +58,7 @@ public class SecurityConfiguration {
                     }
                 }).and()
                 .authorizeHttpRequests()
-                .requestMatchers("/login","/register","/webjars/**").permitAll()
+                .requestMatchers("/login","/register/**","/webjars/**").permitAll()
                 .anyRequest().authenticated().and()
                 .addFilterBefore(new JWTAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

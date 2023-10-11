@@ -28,10 +28,7 @@ public class Authrest {
             userService.saveUserdto(user);
             return ResponseEntity.accepted().build();        }
     }
-    @RequestMapping(method = RequestMethod.GET)
-    public List<User> getAllUser() {
-        return userService.findAllUser();
-    }
+
     @RequestMapping(value="/{id}",method=RequestMethod.GET)
     public User getUserById(@PathVariable("id") Long id) {
         return userService.findUserById(id);
