@@ -1,14 +1,19 @@
 package com.adem.service;
 
 
+import com.adem.dto.RegistrationDto;
 import com.adem.entities.Role;
 import com.adem.entities.User;
 import com.adem.repos.RoleRepository;
 import com.adem.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Transactional
 @Service
@@ -19,6 +24,11 @@ public class UserServiceImpl implements UserService{
     RoleRepository roleRep;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public User saveUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -38,5 +48,31 @@ public class UserServiceImpl implements UserService{
     @Override
     public User findUserByUsername(String username) {
         return userRep.findByUsername(username);
+    }
+    @Override
+    public void saveUserdto(RegistrationDto registrationDto) {
+        User user = new User();
+        user.setUsername(registrationDto.getUsername());
+        System.out.println(registrationDto.getPassword());
+        user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
+        Role role = roleRep.findByName("User");
+        user.setRoles(Arrays.asList(role));
+        userRepository.save(user);
+    }
+    @Override
+    public User updateUser(User user) {
+         return userRepository.save(user);
+    }
+    @Override
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+    @Override
+    public List< User > findAllUser() {
+        return userRepository.findAll();
+    }
+    @Override
+    public User findUserById(Long id) {
+        return userRepository.findById(id).get();
     }
 }

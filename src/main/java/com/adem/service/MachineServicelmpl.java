@@ -2,11 +2,11 @@ package com.adem.service;
 
 import java.util.List;
 
+import com.adem.dto.MachineDto;
 import com.adem.entities.Machine;
 import com.adem.entities.Utilisation;
 import com.adem.repos.ImageRepository;
 import com.adem.repos.UtilisationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -68,8 +68,21 @@ public class MachineServicelmpl implements MachineService{
 	public Utilisation getUtilisationbyid(Long id){
 		return  ul.getReferenceById(id);
 	}
-	
+	@Override
+	public MachineDto convertEntityToDto(Machine machine) {
+		MachineDto machineDTO = new MachineDto();
+		machineDTO.setIdMachine(machine.getIdMachine());
+		machineDTO.setNom(machine.getNom());
+		machineDTO.setPrix(machine.getPrix());
+		machineDTO.setDateachat(machine.getDateachat());
+		machineDTO.setUtulisation(machine.getUtulisation());
+		return machineDTO;
+
+
 	}
+
+
+}
 	
 	
 

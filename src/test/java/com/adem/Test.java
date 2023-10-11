@@ -3,11 +3,11 @@ package com.adem;
 import com.adem.entities.Machine;
 import com.adem.entities.Utilisation;
 import com.adem.repos.MachineReposotiry;
-import com.adem.security.CustomUserDetailsService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Iterator;
 import java.util.List;
@@ -16,9 +16,9 @@ import java.util.List;
 class Test {
 	@Autowired
 	MachineReposotiry machineRepository;
-  @Autowired
-  private CustomUserDetailsService customUserDetailsService;
 
+	@Autowired
+	BCryptPasswordEncoder bCryptPasswordEncoder;
 	@org.junit.jupiter.api.Test
 	void contextLoads() {
 	}
@@ -68,7 +68,7 @@ class Test {
 		}}
 	@org.junit.jupiter.api.Test
 	void test5(){
-		System.out.println(customUserDetailsService.loadUserByUsername("admin1"));
+		System.out.println(bCryptPasswordEncoder.encode("1234"));
 
 	}
 }
