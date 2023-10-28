@@ -10,4 +10,6 @@ public class RegistrationDto {
     private String username;
     @NotEmpty
     private String password;
+    @NotEmpty
+    private String email;
 }

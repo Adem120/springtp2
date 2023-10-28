@@ -1,5 +1,6 @@
 package com.adem.security;
 import com.adem.entities.User;
+import com.adem.service.UserService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -9,11 +10,17 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,11 +29,16 @@ import java.util.List;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
+;
+
+
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         super();
         this.authenticationManager = authenticationManager;
     }
+
+
 
     @Override
     public Authentication attemptAuthentication
@@ -35,6 +47,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     HttpServletResponse httpServletResponse
             ) throws AuthenticationException {
         User user = null;
+
         try {
             user = new ObjectMapper().readValue(httpServletRequest.getInputStream(), User.class);
         } catch (JsonParseException exception) {
@@ -52,13 +65,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException
     {
-        org.springframework.security.core.userdetails.User springUser =
-                (org.springframework.security.core.userdetails.User)
-                        authResult.getPrincipal();
+        org.springframework.security.core.userdetails.User springUser = (org.springframework.security.core.userdetails.User) authResult.getPrincipal();
         List<String> roles = new ArrayList<>();
         springUser.getAuthorities().forEach(au-> {
             roles.add(au.getAuthority());
         });
+
         String token = JWT.create().
                 withSubject(springUser.getUsername()).
                 withArrayClaim("roles", roles.toArray(new String[roles.size()])).

@@ -9,6 +9,7 @@ import com.adem.entities.User;
 import com.adem.service.Imageservice;
 import com.adem.service.MachineService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,10 +44,7 @@ public class MachineRestController {
 		return machineService.updateMachine(machine);
 		
 	}
-	@RequestMapping(method = RequestMethod.GET,value="/user")
-	public List<com.adem.entities.User> getAllUser() {
-		return userService.findAllUser();
-	}
+
 	@RequestMapping(value="/{id}",method=RequestMethod.DELETE)
 public void deleteMachine(@PathVariable("id" )Long id) {
 	machineService.deleteMachineById(id);
